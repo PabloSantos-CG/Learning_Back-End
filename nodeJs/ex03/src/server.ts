@@ -1,0 +1,1 @@
+console.log({ name: "a", age: 12 });
