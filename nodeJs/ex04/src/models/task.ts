@@ -1,6 +1,12 @@
 import { Schema, model } from "mongoose";
 
-const taskSchema = new Schema({
+interface Task {
+  name: string;
+  done: boolean;
+  checklist: Schema.Types.ObjectId;
+}
+
+const taskSchema = new Schema<Task>({
   name: { type: String, required: true },
   done: { type: Boolean, default: false },
   checklist: {
@@ -10,4 +16,6 @@ const taskSchema = new Schema({
   },
 });
 
-export default model("Task", taskSchema);
+const modelName = "Task";
+
+export default model<Task>(modelName, taskSchema);

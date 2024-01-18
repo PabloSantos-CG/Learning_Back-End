@@ -1,6 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
-const checklistSchema = new Schema({
+interface Checklist {
+  name: string;
+  tasks: [Schema.Types.ObjectId];
+}
+
+const checklistSchema = new Schema<Checklist>({
   name: { type: String, required: true },
   tasks: [
     {
@@ -10,4 +15,6 @@ const checklistSchema = new Schema({
   ],
 });
 
-export default mongoose.model("Checklist", checklistSchema);
+const modelName = "Checklist";
+
+export default model<Checklist>(modelName, checklistSchema);

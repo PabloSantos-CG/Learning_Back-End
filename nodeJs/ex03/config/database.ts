@@ -6,7 +6,7 @@ class App {
 
   constructor() {
     this.express = express();
-    this.database();
+    this.connection();
     this.middlewares();
     this.routes();
   }
@@ -14,8 +14,8 @@ class App {
   private middlewares() {
     this.express.use(express.json());
   }
-
-  private database() {
+  
+  private connection() {
     mongoose
       .connect("mongodb://127.0.0.1:27017/myDbUsers")
       .then(() => console.log("conectado ao MongoDB"))

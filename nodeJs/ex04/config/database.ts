@@ -1,7 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { connect } from 'mongoose';
+import "dotenv/config";
 
-mongoose.Promise = global.Promise;
+const mongoConnect = async () => {
+  try {
+    console.log("Conectando ao mongoDB...");
+    mongoose.Promise = global.Promise;
+    await connect(process.env.MONGO_URL as string);
+    console.log("Conexão concluída com sucesso! \n;)");
 
-mongoose.connect("mongodb://127.0.0.1:27017/myDbUsers")
-  .then(() => console.log('conectado ao MongoDB'))
-  .catch((err) => console.error(err));
+  } catch (error) {
+    console.log("Erro de conexão", error);
+  }
+}
+
+export default mongoConnect();
