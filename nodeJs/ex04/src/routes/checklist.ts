@@ -22,12 +22,23 @@ router.post("/", async (req, res) => {
 //Read
 router.get("/", async (req, res) => {
   try {
-    let checklist = await Checklist.find({});
-    console.log("Checklists encontrados: ", checklist);
-    res.status(200).json(checklist);
+    let checklists = await Checklist.find({});
+    res.status(200).render("checklists/index", { checklists });
+    console.log("Checklists encontrados: ", checklists);
   } catch (error) {
     console.log("Ocorreu um erro", error);
-    res.status(422);
+    res.status(422).render("pages/error", { err: "Erro ao exibir as listas" });
+  }
+});
+
+router.get("/new", async (req, res) => {
+  try {
+    let checklist = new Checklist();
+    res.status(200).render("checklists/new", { checklist });
+
+  } catch (error) {
+    console.log("Ocorreu um erro", error);
+    res.status(500).render("pages/error", { err: "Erro ao criar listas" });
   }
 });
 
@@ -35,10 +46,10 @@ router.get("/:id", async (req, res) => {
   try {
     let checklist = await Checklist.findById(req.params.id);
     console.log("Checklist encontrado: ", checklist);
-    res.status(200).json(checklist);
+    res.status(200).render("checklists/show", { checklist });
   } catch (error) {
     console.log("Ocorreu um erro", error);
-    res.status(422);
+    res.status(422).render("pages/error", { err: "Erro ao exibir as listas de tarefas" });
   }
 });
 
