@@ -1,24 +1,24 @@
 import express from "express";
+import path from "path";
 import checklistRouter from "./routes/checklist";
-import Checklist from "./models/checklist";
+import rootRouter from "./routes/index";
 import "../config/database";
 import "dotenv/config";
 
+// configurando express para usar seus recursos e para entender arquivos json //
 const app = express();
 app.use(express.json());
 
+// habilitar a aplicação a usar arquivos estáticos //
+app.use(express.static(path.join(__dirname, "../public")));
 
-// let checklist = new Checklist({ name: "Afazeres do dia" });
+// configuração para usar view enginer //
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
-// checklist
-//   .save()
-//   .then((res) => console.log("Documento criado:", res))
-//   .catch((err) => console.log("Houve um erro:", err));
+// Usando as rotas pré-definidas //
+app.use("/", rootRouter);
+app.use("/checklist" ,checklistRouter);
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World</h1>");
-});
-
-app.use(checklistRouter);
-
-app.listen(process.env.PORT, () => console.log("Servidor foi iniciado."));
+// porta de acesso da aplicação //
+app.listen(process.env.PORT, () => console.log("( Servidor foi iniciado )"));
