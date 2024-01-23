@@ -1,0 +1,17 @@
+<%- include('../layouts/header', { title: 'Editar Lista' }) %>
+<%- include('../layouts/menu') %>
+
+<section class="section">
+  <div class="container">
+    <h1 class="title size-4">Editar Lista</h1>
+    
+<!-- 
+  o "?_method=put" indica o tipo de método a ser utilizado
+  essa url vai ser tratada e interpretada pela biblioteca method-Override 
+  ATENÇÃO:
+    na rota checklist/:id enviamos um checklist para essa página, por isso conseguimos saber seu id
+-->
+    <%- include('form', { url: `/checklists/${checklist.id}/?_method=put`, checklist }) %>
+  </div>
+</section>
+<%- include('../layouts/footer') %>

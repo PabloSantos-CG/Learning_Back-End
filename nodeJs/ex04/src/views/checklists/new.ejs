@@ -4,7 +4,12 @@
 <section class="section">
   <div class="container">
     <h1 class="title size-4">Nova Lista</h1>
-    <%- include('form', { method: "post", url: "/checklists", checklist }) %>
+    
+<!-- 
+  o "?_method=post" indica o tipo de método a ser utilizado
+  essa url vai ser tratada e interpretada pela biblioteca method-Override 
+-->
+    <%- include('form', { url: "/checklists?_method=post", checklist }) %>
   </div>
 </section>
 <%- include('../layouts/footer') %>

@@ -2,14 +2,23 @@ import express from "express";
 import path from "path";
 import checklistRouter from "./routes/checklist";
 import rootRouter from "./routes/index";
+import methodOverride from "method-override";
+
 import "../config/database";
 import "dotenv/config";
 
 // configurando express para usar seus recursos e para entender arquivos json //
 const app = express();
 app.use(express.json());
+
 // habilita o express a pegar informações por url de form //
 app.use(express.urlencoded({ extended: true }));
+
+/* 
+  configuração para que o form execute outros tipos de metódos além de GET e POST 
+  o "_method" se refere ao selecionador em que iremos utilizar posteriormente para definir o método 
+*/
+app.use(methodOverride("_method", { methods: ['POST', 'GET'] }));
 
 // habilitar a aplicação a usar arquivos estáticos //
 app.use(express.static(path.join(__dirname, "../public")));
