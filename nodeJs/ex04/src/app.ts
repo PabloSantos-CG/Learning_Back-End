@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import checklistRouter from "./routes/checklist";
+import tasksRouter from "./routes/tasks";
 import rootRouter from "./routes/index";
 import methodOverride from "method-override";
 
@@ -30,6 +31,7 @@ app.set("view engine", "ejs");
 // Usando as rotas pré-definidas //
 app.use("/", rootRouter);
 app.use("/checklists", checklistRouter);
+app.use("/checklists", tasksRouter);
 
 // porta de acesso da aplicação //
 app.listen(process.env.PORT, () => console.log("( Servidor foi iniciado )"));

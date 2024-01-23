@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-interface Task {
+interface Task extends Document {
   name: string;
   done: boolean;
   checklist: Schema.Types.ObjectId;

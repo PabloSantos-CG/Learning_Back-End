@@ -1,8 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-interface Checklist {
+interface Checklist extends Document {
   name: string;
-  tasks: [Schema.Types.ObjectId];
+  tasks: Schema.Types.ObjectId[];
 }
 
 const checklistSchema = new Schema<Checklist>({
