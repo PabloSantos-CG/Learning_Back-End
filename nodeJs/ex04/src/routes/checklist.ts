@@ -56,7 +56,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).render("checklists/show", { checklist });
 
   } catch (error) {
-    res.status(422).render("pages/error", { err: "Erro ao exibir as listas de tarefas" });
+    res.status(422).render("pages/error", { error });
   }
 });
 
