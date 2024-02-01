@@ -1,14 +1,19 @@
 const express = require("express");
 const planetsController = require("../controllers/planetsController");
 const satellitesController = require("../controllers/satellitesController");
+const captainController = require("../controllers/captainController");
 const routes = express.Router();
 
 // planets routes
 routes.post("/", planetsController.create_Planet);
-routes.get("/satellites", satellitesController.read_All_Satellites);
+routes.get("/", planetsController.read_All_Planet);
 
 // satellites get all
-routes.get("/", planetsController.read_All_Planet);
+routes.get("/satellites", satellitesController.read_All_Satellites);
+
+// captain routes
+routes.get("/captain", captainController.read_All_Captain);
+routes.post("/captain", captainController.create_Captain);
 
 // planets routes with params.id
 routes.get("/:id", planetsController.read_One_Planet);
