@@ -1,4 +1,5 @@
 const Planet = require("../models/Planet");
+const Satellites =  require("../models/Satellites");
 
 module.exports = {
   async create_Planet(req, res) {
@@ -21,7 +22,9 @@ module.exports = {
 
   async read_One_Planet(req, res) {
     try {
-      const planet = await Planet.findByPk(req.params.id);
+      const planet = await Planet.findByPk(req.params.id, {
+        include: Satellites
+      });
       if (planet) {
         res.status(200).json(planet);
       } else {
