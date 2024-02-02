@@ -2,21 +2,21 @@ const Planet = require("../models/Planet");
 const Sattelites = require("../models/Satellites");
 
 module.exports  = {
-  async create_Satellites(req, res) {
+  async create_Satellite(req, res) {
     try {
-      const { name, serialNumber } = req.body;
-      const planet =  await Planet.findByPk(req.params.id);
+      const { name, serialNumber, planetId } = req.body;
+      const planet =  await Planet.findByPk(planetId);
 
       if(!planet) {
         throw new Error("Planeta inexistente!");
       }
 
       if (name && serialNumber) {
-        await Sattelites.create({ name, serialNumber, planetId: req.params.id });
-        res.status(201).json({ name, serialNumber });
+        await Sattelites.create({ name, serialNumber, planetId });
+        res.status(201).json({ name, serialNumber, planetId });
       } else {
         throw new Error(
-          "Você deve informar o name e serialNumber!"
+          "Você deve informar o 'name', 'serialNumber' e o 'planetId'"
         );
       }
 
@@ -26,7 +26,7 @@ module.exports  = {
     }
   },
 
-  async read_One_Satellites(req, res) {
+  async read_One_Satellite(req, res) {
     try {
       const satellite = await Sattelites.findByPk(req.params.id);
 
@@ -52,7 +52,7 @@ module.exports  = {
     }
   },
 
-  async update_Satellites(req, res) {
+  async update_Satellite(req, res) {
     try {
       const { name, serialNumber } = req.body;
 
@@ -69,7 +69,7 @@ module.exports  = {
     }
   },
 
-  async delete_Satellites(req, res) {
+  async delete_Satellite(req, res) {
     try {
       await Sattelites.destroy({ where: { id: req.params.id } });
       res.status(200).json({ message: "Planeta deletado com sucesso!" });

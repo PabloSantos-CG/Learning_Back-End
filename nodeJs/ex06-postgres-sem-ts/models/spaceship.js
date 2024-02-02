@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const instanceSequelize = require("../config/sequelize");
 
-const Spaceship = instanceSequelize.define("spaceship", {
+const Spaceship = instanceSequelize.define("spaceships", {
   name: DataTypes.STRING,
   serialNumber: DataTypes.STRING,
 });

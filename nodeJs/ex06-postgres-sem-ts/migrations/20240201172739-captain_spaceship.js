@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('captain_spaceship', { 
+    await queryInterface.createTable('captains_spaceships', { 
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -13,14 +13,14 @@ module.exports = {
       captainId: { // <- Chave estrangeira
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "captain", key: "id" },
+        references: { model: "captains", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       spaceshipId: { // <- Chave estrangeira
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "spaceship", key: "id" },
+        references: { model: "spaceships", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
@@ -36,6 +36,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('captain_spaceship');
+    await queryInterface.dropTable('captains_spaceships');
   }
 };

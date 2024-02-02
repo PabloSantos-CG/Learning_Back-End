@@ -8,13 +8,13 @@ Satellites.belongsTo(Planet, { foreignKey: "planetId", as: "planet" });
 
 Captain.belongsToMany(Spaceship, {
   foreignKey: "spaceshipId",
-  through: "captain_spaceship",
-  as: "spaceship",
+  through: "captains_spaceships",
+  as: "spaceships",
 });
 Spaceship.belongsToMany(Captain, {
   foreignKey: "captainId",
-  through: "captain_spaceship",
-  as: "captain",
+  through: "captains_spaceships",
+  as: "captains",
 });
 
 module.exports = { Planet, Satellites, Captain, Spaceship };

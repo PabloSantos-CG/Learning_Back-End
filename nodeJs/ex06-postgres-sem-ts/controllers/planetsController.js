@@ -35,8 +35,8 @@ module.exports = {
       console.log("Ocorreu um erro :(\n", error);
     }
   },
-
-  async read_All_Planet(req, res) {
+  
+  async read_All_Planets(req, res) {
     try {
       const planets = await Planet.findAll();
       res.status(200).json(planets);
