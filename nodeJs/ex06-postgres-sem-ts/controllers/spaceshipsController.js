@@ -1,18 +1,28 @@
 const Spaceships = require("../models/spaceship");
+const Captain = require("../models/captain");
 
 module.exports = {
   async create_Spaceship(req, res) {
     try {
-      const { name, serialNumber } = req.body;
+      const { capId, name, serialNumber } = req.body;
+
+      const cap = await Captain.findByPk(capId);
+
+      if (!cap) {
+        res.send("Este capitão não existe!");
+      }
 
       if (name && serialNumber) {
         const spaceship = await Spaceships.create({ name, serialNumber });
+        await cap.addSpaceships(spaceship);
         res.status(201).json(spaceship);
+
       } else {
         throw new Error(
           "Você possivelmente não informou o name e serialNumber, então não foi possível criar um novo captão"
         );
       }
+
     } catch (error) {
       res.status(422).json({ error: error.message });
       console.log("Ocorreu um erro :(\n", error);
