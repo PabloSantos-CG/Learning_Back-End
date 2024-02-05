@@ -5,17 +5,12 @@ module.exports = {
   async create_Planet(req, res) {
     try {
       const { name, position } = req.body;
-
-      if (name && position) {
-        await Planet.create({ name, position });
-        res.status(201).json({ name, position });
-      } else {
-        throw new Error(
-          "Você possivelmente não informou o name e position, então não foi possível criar o planeta"
-        );
-      }
+  
+      await Planet.create({ name, position });
+      return res.status(201).json({ name, position });
+      
     } catch (error) {
-      res.status(422).json({ error: error.message });
+      res.status(422);
       console.log("Ocorreu um erro :(\n", error);
     }
   },

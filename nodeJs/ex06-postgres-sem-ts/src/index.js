@@ -14,6 +14,8 @@ app.use(express.json());
 app.use("/planets", planetsRouter);
 app.use("/satellites", satellitesRouter);
 app.use("/captains", captainsRouter);
-app.use("/spaceships", spaceshipsRouter);
+app.use(spaceshipsRouter);
 
-app.listen(3000, () => console.log(`A porta: 3000 está ativa. Acesse localhost:300`));
+app.listen(3000, () =>
+  console.log(`A porta: 3000 está ativa. Acesse localhost:300`)
+);

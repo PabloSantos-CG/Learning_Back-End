@@ -4,24 +4,21 @@ const Captain = require("../models/captain");
 module.exports = {
   async create_Spaceship(req, res) {
     try {
-      const { capId, name, serialNumber } = req.body;
-
-      const cap = await Captain.findByPk(capId);
+      const { name, serialNumber } = req.body;
+      const cap = await Captain.findByPk(req.params.id);
 
       if (!cap) {
-        res.send("Este capitão não existe!");
+        throw new Error("Este capitão não existe!");
       }
 
-      if (name && serialNumber) {
-        const spaceship = await Spaceships.create({ name, serialNumber });
-        await cap.addSpaceships(spaceship);
-        res.status(201).json(spaceship);
-
-      } else {
-        throw new Error(
-          "Você possivelmente não informou o name e serialNumber, então não foi possível criar um novo captão"
-        );
-      }
+      const [spaceship]= await Spaceships.findOrCreate({
+        where: {
+          name,
+          serialNumber
+        }
+      });
+      await cap.addSpaceships(spaceship);
+      return res.json(spaceship);
 
     } catch (error) {
       res.status(422).json({ error: error.message });
@@ -37,9 +34,10 @@ module.exports = {
       if (spaceship) {
         res.status(200).json(spaceship);
       } else {
-        throw new Error("Não foi possível encontrar a espaçonave.");
+        throw new Error("Não foi possível encontrar a espaçonave ou ela não existe");
       }
     } catch (error) {
+      res.json({ message: error.message });
       console.log("Ocorreu um erro :(\n", error);
     }
   },
@@ -55,15 +53,12 @@ module.exports = {
     try {
       const { name, serialNumber } = req.body;
 
-      if (name && serialNumber) {
-        const spaceship = await Spaceships.update(
-          { name, serialNumber },
-          { where: { id: req.params.id } }
-        );
-        res.status(200).json(spaceship);
-      } else {
-        throw new Error("Você deve informar 'name' e 'serialNumber'");
-      }
+      const spaceship = await Spaceships.update(
+        { name, serialNumber },
+        { where: { id: req.params.id } }
+      );
+      return res.status(200).json(spaceship);
+      
     } catch (error) {
       console.log("Ocorreu um erro :(\n", error);
     }

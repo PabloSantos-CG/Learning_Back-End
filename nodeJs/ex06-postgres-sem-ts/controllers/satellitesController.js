@@ -11,15 +11,9 @@ module.exports  = {
         throw new Error("Planeta inexistente!");
       }
 
-      if (name && serialNumber) {
-        await Sattelites.create({ name, serialNumber, planetId });
-        res.status(201).json({ name, serialNumber, planetId });
-      } else {
-        throw new Error(
-          "Você deve informar o 'name', 'serialNumber' e o 'planetId'"
-        );
-      }
-
+      await Sattelites.create({ name, serialNumber, planetId });
+      return res.status(201).json({ name, serialNumber, planetId });
+      
     } catch (error) {
       res.status(422).json({ error: error.message });
       console.log("Ocorreu um erro :(\n", error);
@@ -55,13 +49,9 @@ module.exports  = {
   async update_Satellite(req, res) {
     try {
       const { name, serialNumber } = req.body;
-
-      if(name && serialNumber) {
-        await Sattelites.update({ name, serialNumber }, { where: { id: req.params.id } });
-        res.json({ message: "Planeta atualizado com sucesso!" });
-      } else {
-        throw new Error("Você deve informar o name e o serialNumber!");
-      }
+      
+      await Sattelites.update({ name, serialNumber }, { where: { id: req.params.id } });
+      res.status(200);
       
     } catch (error) {
       res.status(422).json({ error: error.message });
