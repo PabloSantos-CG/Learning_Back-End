@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { Candidate } from "../models/candidates";
+import { Company } from "../models/companies";
 
-export const candidatesController = {
+export const companiesController = {
   index: async (req: Request, res: Response) => {
     try {
-      const candidates = await Candidate.findAll();
-      return res.json(candidates);
+      const companies = await Company.findAll();
+      return res.json(companies);
     } catch (error) {
       res.status(400);
     }
@@ -13,7 +13,7 @@ export const candidatesController = {
   save: async (req: Request, res: Response) => {
     try {
       const { name, email, bio, phone, openToWork } = req.body;
-      const candidate = await Candidate.create({
+      const company = await Company.create({
         name,
         email,
         bio,
@@ -21,7 +21,7 @@ export const candidatesController = {
         openToWork,
       });
 
-      return res.status(201).json(candidate);
+      return res.status(201).json(company);
     } catch (error) {
       console.log(error);
       return res.status(400);
@@ -30,13 +30,13 @@ export const candidatesController = {
   show: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const candidate = await Candidate.findByPk(id);
+      const company = await Company.findByPk(id);
 
-      if (candidate === null) {
+      if (company === null) {
         return res.status(404).json({ message: "Candidato não encontrado" });
       }
 
-      return res.json(candidate);
+      return res.json(company);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -49,11 +49,11 @@ export const candidatesController = {
       const { id } = req.params;
       const { name, email, bio, phone, openToWork } = req.body;
 
-      const [affectedRows, candidate] = await Candidate.update(
+      const [affectedRows, company] = await Company.update(
         { name, email, bio, phone, openToWork },
         { where: { id }, returning: true },
       );
-      res.status(200).json(candidate[0]);
+      res.status(200).json(company[0]);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -65,7 +65,7 @@ export const candidatesController = {
     try {
       const { id } = req.params;
 
-      await Candidate.destroy({ where: { id } });
+      await Company.destroy({ where: { id } });
       res.status(204).send();
 
     } catch (error) {
