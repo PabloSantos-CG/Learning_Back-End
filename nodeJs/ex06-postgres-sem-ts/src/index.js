@@ -7,7 +7,9 @@ const spaceshipsRouter = require("./routes/spaceships");
 
 // Importamos nossa associação para deixá-la disponível, ou seja, dizer que ela existe
 require("../config/associations");
-
+/*
+Aplicação está com problema no relacionamento muitos-para-muitos 
+*/
 const app = express();
 app.use(express.json());
 
