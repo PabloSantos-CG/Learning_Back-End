@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { Company } from "../models/companies";
+import { Company } from "../models";
 
 export const companiesController = {
   index: async (req: Request, res: Response) => {
     try {
-      const companies = await Company.findAll();
+      const companies = await Company.findAll({
+        include: {
+          association: "jobs",
+          attributes: ["id", "title", "description", "limitDate"],
+        },
+      });
+      
       return res.json(companies);
     } catch (error) {
       res.status(400);
@@ -30,7 +36,7 @@ export const companiesController = {
   show: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const company = await Company.findByPk(id);
+      const company = await Company.findByPk(id, { include: "jobs" });
 
       if (company === null) {
         return res.status(404).json({ message: "Candidato não encontrado" });
@@ -51,7 +57,7 @@ export const companiesController = {
 
       const [affectedRows, company] = await Company.update(
         { name, email, bio, phone, openToWork },
-        { where: { id }, returning: true },
+        { where: { id }, returning: true }
       );
       res.status(200).json(company[0]);
     } catch (error) {
@@ -67,7 +73,6 @@ export const companiesController = {
 
       await Company.destroy({ where: { id } });
       res.status(204).send();
-
     } catch (error) {
       console.log(error);
       res.status(400);
