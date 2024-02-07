@@ -25,10 +25,7 @@ module.exports = {
       company_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'companies',
-          key: 'id'
-        },
+        references: { model: 'companies', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
       },
