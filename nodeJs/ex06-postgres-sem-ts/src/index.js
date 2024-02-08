@@ -5,10 +5,6 @@ const captainsAndSpaceshipsRouter = require("./routes/captainsAndSpaceships");
 
 require("../config/associations");
 
-/*
-Aplicação está com problema no relacionamento muitos-para-muitos 
-*/
-
 const app = express();
 
 app.use(express.json());

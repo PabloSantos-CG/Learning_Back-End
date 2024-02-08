@@ -6,15 +6,7 @@ const Spaceship = require("../models/spaceship");
 Planet.hasMany(Satellites);
 Satellites.belongsTo(Planet);
 
-Captain.belongsToMany(Spaceship, {
-  foreignKey: "spaceshipId",
-  through: "captains_spaceships",
-  as: "spaceships",
-});
-Spaceship.belongsToMany(Captain, {
-  foreignKey: "captainId",
-  through: "captains_spaceships",
-  as: "captains",
-});
+Captain.belongsToMany(Spaceship, { through: "captains_spaceships" });
+Spaceship.belongsToMany(Captain, { through: "captains_spaceships" });
 
 module.exports = { Planet, Satellites, Captain, Spaceship };

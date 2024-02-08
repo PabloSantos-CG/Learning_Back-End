@@ -110,8 +110,9 @@ export const jobsController = {
 
       const job = await Job.findByPk(jobId);
 
-      if (job === null)
+      if (job === null) {
         return res.status(404).json({ message: "Vaga inexistente!" });
+      }
 
       await job.addCandidate(candidateId);
       return res.status(201).send();
