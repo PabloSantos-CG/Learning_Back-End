@@ -1,65 +1,87 @@
 const Planet = require("../models/Planet");
-const Satellites =  require("../models/Satellites");
 
 module.exports = {
   async create_Planet(req, res) {
     try {
       const { name, position } = req.body;
-  
-      await Planet.create({ name, position });
-      return res.status(201).json({ name, position });
-      
+
+      const planet = await Planet.create({ name, position });
+      return res.status(201).json(planet);
     } catch (error) {
-      res.status(422);
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+    }
+  },
+
+  async read_All_Planets(req, res) {
+    try {
+      const planets = await Planet.findAll({
+        include: [{
+          association: "satellites",
+          attributes: ["name", "serialNumber"],
+        }],
+      });
+      res.status(200).json(planets);
+    } catch (error) {
+      console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async read_One_Planet(req, res) {
     try {
       const planet = await Planet.findByPk(req.params.id, {
-        include: Satellites
+        include: [{
+          association: "satellites",
+          attributes: ["name", "serialNumber"],
+        }],
       });
-      if (planet) {
-        res.status(200).json(planet);
-      } else {
-        throw new Error("Não foi possível encontrar o planeta.");
+
+      if (planet === null)
+        return res.json({ message: "Não foi possível encontrar o planeta." });
+
+      return res.status(200).json({ planet });
+    } catch (error) {
+      console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
       }
-    } catch (error) {
-      res.status(422).json({ error: error.message });
-      console.log("Ocorreu um erro :(\n", error);
-    }
-  },
-  
-  async read_All_Planets(req, res) {
-    try {
-      const planets = await Planet.findAll();
-      res.status(200).json(planets);
-    } catch (error) {
-      console.log("Ocorreu um erro :(\n", error);
     }
   },
 
   async update_Planet(req, res) {
     try {
+      const { id } = req.params;
       const { name, position } = req.body;
-      await Planet.update({ name, position }, { where: { id: req.params.id } });
-      res.json({ message: "Planeta atualizado com sucesso!" });
-      
+
+      const planet = await Planet.update(
+        { name, position },
+        { where: { id }, returning: true }
+      );
+
+      return res.json(planet[1]);
+
     } catch (error) {
-      res.status(422);
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async delete_Planet(req, res) {
     try {
       await Planet.destroy({ where: { id: req.params.id } });
-      res.status(200).json({ message: "Planeta deletado com sucesso!" });
-
+      return res.status(204).send();
     } catch (error) {
-      res.status(422);
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 };

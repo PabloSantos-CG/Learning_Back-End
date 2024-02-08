@@ -1,72 +1,91 @@
 const Planet = require("../models/Planet");
 const Sattelites = require("../models/Satellites");
 
-module.exports  = {
+module.exports = {
   async create_Satellite(req, res) {
     try {
       const { name, serialNumber, planetId } = req.body;
-      const planet =  await Planet.findByPk(planetId);
+      const planet = await Planet.findByPk(planetId);
 
-      if(!planet) {
-        throw new Error("Planeta inexistente!");
-      }
+      if (planet === null)
+        return res.status(404).json({ message: "Planeta inexistente!" });
 
-      await Sattelites.create({ name, serialNumber, planetId });
-      return res.status(201).json({ name, serialNumber, planetId });
-      
+      const satellite = await Sattelites.create({
+        name,
+        serialNumber,
+        planetId,
+      });
+      return res.status(201).json(satellite);
     } catch (error) {
-      res.status(422).json({ error: error.message });
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async read_One_Satellite(req, res) {
     try {
-      const satellite = await Sattelites.findByPk(req.params.id);
+      const { id } = req.params;
 
-      if (satellite) {
-        res.status(200).json(satellite);
-      } else {
-        throw new Error("Não foi possível encontrar o Satélite.");
+      const satellite = await Sattelites.findByPk(id);
+
+      if (satellite === null) {
+        return res
+          .status(404)
+          .json({ message: "Não foi possível encontrar o Satélite." });
       }
 
+      return res.status(200).json(satellite);
     } catch (error) {
-      res.status(422).json({ error: error.message });
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async read_All_Satellites(req, res) {
     try {
       const satellites = await Sattelites.findAll();
-      res.status(200).json(satellites);
 
+      return res.status(200).json(satellites);
     } catch (error) {
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async update_Satellite(req, res) {
     try {
       const { name, serialNumber } = req.body;
-      
-      await Sattelites.update({ name, serialNumber }, { where: { id: req.params.id } });
-      res.status(200);
-      
+
+      const [rowsAffected, satellit] = await Sattelites.update(
+        { name, serialNumber },
+        { where: { id: req.params.id }, returning: true }
+      );
+
+      return res.status(200).json(satellit);
     } catch (error) {
-      res.status(422).json({ error: error.message });
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 
   async delete_Satellite(req, res) {
     try {
       await Sattelites.destroy({ where: { id: req.params.id } });
-      res.status(200).json({ message: "Planeta deletado com sucesso!" });
 
+      return res.status(204).send();
     } catch (error) {
-      res.status(422);
       console.log("Ocorreu um erro :(\n", error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
     }
   },
 };

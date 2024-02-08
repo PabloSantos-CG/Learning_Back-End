@@ -17,7 +17,7 @@ module.exports = {
           serialNumber
         }
       });
-      await cap.addSpaceships(spaceship);
+      await cap.addSpaceship(spaceship);
       return res.json(spaceship);
 
     } catch (error) {

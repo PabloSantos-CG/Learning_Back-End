@@ -3,8 +3,8 @@ const Satellites = require("../models/Satellites");
 const Captain = require("../models/captain");
 const Spaceship = require("../models/spaceship");
 
-Planet.hasMany(Satellites, { onDelete: "CASCADE", onUpdate: "CASCADE" });
-Satellites.belongsTo(Planet, { foreignKey: "planetId", as: "planet" });
+Planet.hasMany(Satellites);
+Satellites.belongsTo(Planet);
 
 Captain.belongsToMany(Spaceship, {
   foreignKey: "spaceshipId",
