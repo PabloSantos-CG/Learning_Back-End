@@ -1,15 +1,10 @@
-import { sequelize } from "./database";
+import "dotenv/config";
+import express from "express";
+import router from "./routes/test";
 
-const test = async (req?: any, res?: any) => {
-  await sequelize
-    .authenticate()
-    .then(() => {
-      console.log('Conexão bem-sucedida!');
-    })
-    .catch((error) => {
-      console.error('Erro na conexão:', error);
-    });
-  
-}
+const app = express();
 
-test();
+app.use(express.json());
+
+app.use(router);
+app.listen(process.env.PORT || 3000, () => console.log("\nPorta ativa!"));
