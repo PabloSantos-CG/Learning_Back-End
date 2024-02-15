@@ -6,7 +6,7 @@ import "dotenv/config";
 export = {
   list: async (req: Request, res: Response) => {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({ attributes: ['email'] });
       return res.status(200).json(users);
 
     } catch (error) {
