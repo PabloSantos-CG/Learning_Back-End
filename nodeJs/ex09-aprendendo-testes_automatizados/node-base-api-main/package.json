@@ -26,8 +26,10 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^16.18.82",
     "@types/sequelize": "^4.28.20",
+    "@types/supertest": "^6.0.2",
     "@types/validator": "^13.11.9",
     "jest": "^29.7.0",
+    "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
     "ts-node-dev": "^2.0.0"
   }

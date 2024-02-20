@@ -5,12 +5,11 @@ export const createUser = async (email: string, password: string) => {
   let hasUser = await User.findOne({ where: { email } });
   if (!hasUser) {
     const hash = bcrypt.hashSync(password, 10);
-    await User.create({ email, hash });
+    const user = await User.create({ email, password: hash });
 
-    return true;
+    return user;
   } else {
-    
-    return false;
+    return new Error("Usuário já existe!");
   }
 };
 
@@ -20,16 +19,10 @@ export const access = async (email: string, password: string) => {
   });
 
   if (!user) {
-    return false;
+    return new Error("E-mail não cadastrado");
   }
 
-  const match = bcrypt.compareSync(password, user.password);
-
-  if (match) {
-    return true;
-  }
-
-  return false;
+  return bcrypt.compareSync(password, user.password);
 };
 
 export const all = async () => {

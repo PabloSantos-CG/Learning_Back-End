@@ -2,20 +2,20 @@ import { Request, Response } from "express";
 import { access, all, createUser } from "../services/UserService";
 
 export const ping = (req: Request, res: Response) => {
-  res.json({ pong: true });
+  return res.json({ pong: true });
 };
 
 export const register = async (req: Request, res: Response) => {
   if (req.body.email && req.body.password) {
     let { email, password } = req.body;
 
-    const result = await createUser(email, password);
+    const newUser = await createUser(email, password);
 
-    if (result) {
-      return res.status(201).json({ status: "Success" });
-    } else {
-      return res.status(400).json({ status: "Usuário já existe!" });
+    if (newUser instanceof Error) {
+      return res.status(400).json({ error: newUser.message });
     }
+
+    return res.status(201).json({ id: newUser.id });
   }
   return res.status(400).send();
 };
@@ -26,20 +26,13 @@ export const login = async (req: Request, res: Response) => {
     let password: string = req.body.password;
 
     const authorization = await access(email, password);
+
+    if (authorization instanceof Error) {
+      return res.status(404).json({ error: authorization.message });
+    }
+
     return res.json({ authorization });
   }
-
-  //     let user = await User.findOne({
-  //         where: { email, password }
-  //     });
-
-  //     if(user) {
-  //         res.json({ status: true });
-  //         return;
-  //     }
-  // }
-
-  // res.json({ status: false });
 };
 
 export const list = async (req: Request, res: Response) => {
@@ -50,5 +43,5 @@ export const list = async (req: Request, res: Response) => {
     list.push(users[i].email);
   }
 
-  res.json({ list });
+  return res.json({ list });
 };
