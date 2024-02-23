@@ -1,48 +1,48 @@
-'use strict';
+"use strict";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('jobs', {
+    await queryInterface.createTable("jobs", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       limit_date: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       company_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'companies',
-          key: 'id'
+          model: "companies",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT'
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
-    })
+        allowNull: false,
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('jobs')
-  }
+    await queryInterface.dropTable("jobs");
+  },
 };
