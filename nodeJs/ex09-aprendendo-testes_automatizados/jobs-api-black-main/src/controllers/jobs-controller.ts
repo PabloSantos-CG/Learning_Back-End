@@ -40,7 +40,7 @@ const jobsController = {
         include: ["company", "candidates"],
       });
 
-      if(job === null) {
+      if (job === null) {
         return res.status(404).json({ message: "Vaga não encontrada" });
       }
 
@@ -58,6 +58,12 @@ const jobsController = {
     const { title, description, limitDate, companyId } = req.body;
 
     try {
+      const job = await Job.findByPk(id);
+
+      if (job === null) {
+        return res.status(404).json({ message: "Vaga não encontrada" });
+      }
+
       const [affectedRows, jobs] = await Job.update(
         {
           title,
@@ -102,10 +108,11 @@ const jobsController = {
     try {
       const job = await Job.findByPk(jobId);
 
-      if (job === null)
+      if (job === null) {
         return res
           .status(404)
           .json({ message: "Vaga de emprego não encontrada" });
+      }
 
       await job.addCandidate(candidateId);
 
