@@ -39,8 +39,13 @@ const jobsController = {
       const job = await Job.findByPk(id, {
         include: ["company", "candidates"],
       });
-      const candidatesCount = await job?.countCandidates();
-      return res.json({ ...job?.get(), candidatesCount });
+
+      if(job === null) {
+        return res.status(404).json({ message: "Vaga não encontrada" });
+      }
+
+      const candidatesCount = await job.countCandidates();
+      return res.json({ ...job.get(), candidatesCount });
     } catch (err) {
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });

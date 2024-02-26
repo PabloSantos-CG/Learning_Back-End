@@ -1,11 +1,11 @@
 import supertest from "supertest";
 import { Company, sequelize } from "../../src/models";
 import { app } from "../../src/app";
-import { ComapnyInstance } from "../../src/models/company";
+import { CompanyInstance } from "../../src/models/company";
 import { companyFactory } from "../../src/models/factories/company";
 
-describe("Candidates endpoints", () => {
-  let companies: ComapnyInstance[];
+describe("Companies endpoints", () => {
+  let companies: CompanyInstance[];
 
   beforeEach(async () => {
     await sequelize.sync({ force: true });
@@ -90,10 +90,10 @@ describe("Candidates endpoints", () => {
     const { body, status } = await supertest(app).delete(
       `/companies/${companies[0].id}`
     );
-    const company = await Company.findByPk(companies[0].id);
+    const deletedCompany = await Company.findByPk(companies[0].id);
 
     expect(status).toBe(204);
     expect(body).toEqual({});
-    expect(company).toBeNull();
+    expect(deletedCompany).toBeNull();
   });
 });

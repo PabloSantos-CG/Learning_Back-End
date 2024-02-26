@@ -11,12 +11,12 @@ export interface Company {
 export interface CompanyCreationAttributes
   extends Optional<Company, "id" | "bio" | "website" | "email"> {}
 
-export interface ComapnyInstance
+export interface CompanyInstance
   extends Model<Company, CompanyCreationAttributes>,
     Company {}
 
 export default (sequelize: Sequelize) => {
-  const Company = sequelize.define<ComapnyInstance, Company>("companies", {
+  const Company = sequelize.define<CompanyInstance, Company>("companies", {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
