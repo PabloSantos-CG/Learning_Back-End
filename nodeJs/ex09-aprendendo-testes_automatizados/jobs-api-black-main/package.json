@@ -7,7 +7,7 @@
     "create-test-db": "set NODE_ENV=test& sequelize-cli db:create",
     "drop-test-db": "set NODE_ENV=test& sequelize-cli db:drop",
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
-    "test": "jest"
+    "test": "jest --watchAll"
   },
   "keywords": [],
   "author": "",

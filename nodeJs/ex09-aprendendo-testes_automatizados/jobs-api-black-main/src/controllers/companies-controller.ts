@@ -37,6 +37,11 @@ const companiesController = {
 
     try {
       const company = await Company.findByPk(id, { include: "jobs" });
+
+      if (company === null) {
+        return res.status(404).json({ message: "Empresa não encontrada" });
+      }
+
       return res.json(company);
     } catch (err) {
       if (err instanceof Error) {
@@ -50,6 +55,12 @@ const companiesController = {
     const { name, bio, website, email } = req.body;
 
     try {
+      const company = await Company.findByPk(id);
+
+      if (company === null) {
+        return res.status(404).json({ message: "Empresa não encontrada" });
+      }
+
       const [affectedRows, companies] = await Company.update(
         {
           name,

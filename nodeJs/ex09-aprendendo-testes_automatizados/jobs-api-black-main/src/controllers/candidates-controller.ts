@@ -38,6 +38,11 @@ const candidatesController = {
 
     try {
       const candidate = await Candidate.findByPk(id, { include: "jobs" });
+
+      if (candidate === null) {
+        return res.status(404).json({ message: "Candidato não encontrado"});
+      }
+
       return res.json(candidate);
     } catch (err) {
       if (err instanceof Error) {
@@ -57,15 +62,12 @@ const candidatesController = {
         return res.status(404).json({ message: "Candidato não encontrado" });
       }
 
-      candidate.name = name;
-      candidate.bio = bio;
-      candidate.email = email;
-      candidate.phone = phone;
-      candidate.openToWork = openToWork;
-
-      await candidate.save();
-
-      return res.status(200).json(candidate);
+      const [affectedRows, affectedCandidate] = await Candidate.update(
+        { name, email, bio, phone, openToWork },
+        { where: { id }, returning: true },
+      );
+      
+      return res.status(200).json(affectedCandidate[0]);
     } catch (err) {
       if (err instanceof Error) {
         return res.status(400).json({ message: err.message });
