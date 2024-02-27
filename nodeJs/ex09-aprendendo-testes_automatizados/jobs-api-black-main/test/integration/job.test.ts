@@ -1,10 +1,11 @@
 import supertest from "supertest";
-import { Company, Job, sequelize } from "../../src/models";
+import { Candidate, Company, Job, sequelize } from "../../src/models";
 import { CompanyInstance } from "../../src/models/company";
 import { companyFactory } from "../../src/models/factories/company";
 import { jobFactory } from "../../src/models/factories/job";
 import { JobInstance } from "../../src/models/job";
 import { app } from "../../src/app";
+import { candidateFactory } from "../../src/models/factories/candidate";
 
 describe("Jobs endpoints", () => {
   let company: CompanyInstance;
@@ -79,10 +80,10 @@ describe("Jobs endpoints", () => {
   it("should not update a job if the id is invalid", async () => {
     const invalidId = jobs[jobs.length - 1].id + 1;
     const { body, status } = await supertest(app)
-    .put(`/jobs/${invalidId}`)
-    .send({
-      title: "testOfUpdate",
-    });
+      .put(`/jobs/${invalidId}`)
+      .send({
+        title: "testOfUpdate",
+      });
 
     expect(status).toBe(404);
     expect(body.message).toBe("Vaga não encontrada");
@@ -95,5 +96,102 @@ describe("Jobs endpoints", () => {
     expect(status).toBe(204);
     expect(body).toEqual({});
     expect(deletedJob).toBeNull();
+  });
+
+  it("should add a candidate", async () => {
+    const newCandidate = await Candidate.create(candidateFactory.build());
+    const { body, status } = await supertest(app)
+      .post(`/jobs/${jobs[0].id}/addCandidate`)
+      .send({ candidateId: newCandidate.id });
+
+    const jobCandidates = await jobs[0].getCandidates();
+
+    expect(status).toBe(201);
+    expect(body).toEqual({});
+    expect(jobCandidates.length).toBe(1);
+    expect(jobCandidates[0].id).toBe(newCandidate.id);
+    expect(jobCandidates[0].name).toBe(newCandidate.name);
+    expect(jobCandidates[0].email).toBe(newCandidate.email);
+  });
+
+  it("should not add candidate if ID is not provided", async () => {
+    const { body, status } = await supertest(app).post(
+      `/jobs/${jobs[0].id}/addCandidate`
+    );
+
+    expect(status).toBe(400);
+    expect(body.message).toBe("candidateId é obrigatório");
+  });
+
+  it("should not add candidate if the job does not exist", async () => {
+    const invalidJobId = jobs[jobs.length - 1].id + 1;
+    const newCandidate = await Candidate.create(candidateFactory.build());
+    const { body, status } = await supertest(app)
+      .post(`/jobs/${invalidJobId}/addCandidate`)
+      .send({ candidateId: newCandidate.id });
+
+    expect(status).toBe(404);
+    expect(body.message).toBe("Vaga de emprego não encontrada");
+  });
+
+  it("should not add a candidate that already exists", async () => {
+    const newCandidates = await Candidate.bulkCreate(
+      candidateFactory.buildList(3)
+    );
+    await jobs[0].addCandidates(newCandidates.map((candidate) => candidate.id));
+
+    const { body, statusCode } = await supertest(app)
+      .post(`/jobs/${jobs[0].id}/addCandidate`)
+      .send({ candidateId: newCandidates[0].id });
+
+    const jobCandidates = await jobs[0].getCandidates();
+
+    expect(statusCode).toBe(400);
+    expect(body.message).toBe("Candidato já cadastrado");
+    expect(jobCandidates.length).toBe(3);
+  });
+
+  it("should remove a candidate", async () => {
+    const newCandidates = await Candidate.bulkCreate(
+      candidateFactory.buildList(3)
+    );
+    await jobs[0].addCandidates(newCandidates.map((candidate) => candidate.id));
+
+    const { body, status } = await supertest(app)
+      .post(`/jobs/${jobs[0].id}/removeCandidate`)
+      .send({ candidateId: newCandidates[0].id });
+
+    const jobCandidates = await jobs[0].getCandidates();
+    const candidate = await jobs[0].hasCandidate(newCandidates[0].id);
+
+    expect(status).toBe(204);
+    expect(body).toEqual({});
+    expect(jobCandidates.length).toBe(2);
+    expect(candidate).toBeFalsy();
+  });
+
+  it("should not remove a candidate if the job does not exist", async () => {
+    const invalidJobId = jobs[jobs.length - 1].id + 1;
+
+    const newCandidates = await Candidate.bulkCreate(candidateFactory.buildList(3));
+    await jobs[0].addCandidates(newCandidates.map((candidate) => candidate.id));
+
+    const { body, status } = await supertest(app)
+      .post(`/jobs/${invalidJobId}/removeCandidate`)
+      .send({ candidateId: newCandidates[0].id });
+
+    expect(status).toBe(404);
+    expect(body.message).toBe("Vaga de emprego não encontrada");
+  });
+
+  it("should not remove a candidate if ID is not provided", async () => {
+    const newCandidates = await Candidate.bulkCreate(candidateFactory.buildList(3));
+    await jobs[0].addCandidates(newCandidates.map((candidate) => candidate.id));
+
+    const { body, status } = await supertest(app)
+      .post(`/jobs/${jobs[0].id}/removeCandidate`);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe("candidateId é obrigatório");
   });
 });
