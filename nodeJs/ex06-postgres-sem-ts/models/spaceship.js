@@ -1,9 +1,9 @@
-const { DataTypes } = require("sequelize");
-const instanceSequelize = require("../config/sequelize");
+import { DataTypes } from "sequelize";
+import { define } from "../config/sequelize";
 
-const Spaceship = instanceSequelize.define("spaceships", {
+const Spaceship = define("spaceships", {
   name: DataTypes.STRING,
   serialNumber: DataTypes.STRING,
 });
 
-module.exports = Spaceship;
+export default Spaceship;
